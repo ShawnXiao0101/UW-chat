@@ -29,16 +29,16 @@ func main() {
 	}
 
 	go func() {
-		// Win10本地部署
-		// if err := https_server.GE.RunTLS(fmt.Sprintf("%s:%d", host, port), "pkg/ssl/127.0.0.1+2.pem", "pkg/ssl/127.0.0.1+2-key.pem"); err != nil {
-		// 	zlog.Fatal("server running fault")
-		// 	return
-		// }
-		// Ubuntu22.04云服务器部署
-		if err := https_server.GE.RunTLS(fmt.Sprintf("%s:%d", host, port), "/etc/ssl/certs/server.crt", "/etc/ssl/private/server.key"); err != nil {
+		// macOS本地部署
+		if err := https_server.GE.RunTLS(fmt.Sprintf("%s:%d", host, port), "/Users/shawn/Desktop/UW-chat/KamaChat/pkg/ssl/127.0.0.1+1.pem", "/Users/shawn/Desktop/UW-chat/KamaChat/pkg/ssl/127.0.0.1+1-key.pem"); err != nil {
 			zlog.Fatal("server running fault")
 			return
 		}
+		// Ubuntu22.04云服务器部署
+		// if err := https_server.GE.RunTLS(fmt.Sprintf("%s:%d", host, port), "/etc/ssl/certs/server.crt", "/etc/ssl/private/server.key"); err != nil {
+		// 	zlog.Fatal("server running fault")
+		// 	return
+		// }
 	}()
 
 	// 设置信号监听

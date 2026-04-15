@@ -12,12 +12,12 @@ import (
 func TestCreate(t *testing.T) {
 	userInfo := &model.UserInfo{
 		Uuid:      "U" + strconv.Itoa(random.GetRandomInt(11)),
-		NickName:  "apylee",
-		TelePhone: "180323532112",
+		Nickname:  "apylee",
+		Telephone: "18032353211",
 		Email:     "1212312312@qq.com",
 		Password:  "123456",
 		CreatedAt: time.Now(),
-		IsAdmin:   true,
+		IsAdmin:   0,
 	}
 	_ = dao.GormDB.Create(userInfo)
 }

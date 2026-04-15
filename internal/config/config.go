@@ -66,16 +66,16 @@ type Config struct {
 var config *Config
 
 func LoadConfig() error {
-	// 本地部署
-	// if _, err := toml.DecodeFile("F:\\go\\kama-chat-server\\configs\\config_local.toml", config); err != nil {
-	// 	log.Fatal(err.Error())
-	// 	return err
-	// }
-	// Ubuntu22.04云服务器部署
-	if _, err := toml.DecodeFile("/root/project/KamaChat/configs/config_local.toml", config); err != nil {
+	// macOS本地部署
+	if _, err := toml.DecodeFile("/Users/shawn/Desktop/UW-chat/KamaChat/configs/config_local.toml", config); err != nil {
 		log.Fatal(err.Error())
 		return err
 	}
+	// Ubuntu22.04云服务器部署
+	// if _, err := toml.DecodeFile("/root/project/KamaChat/configs/config_local.toml", config); err != nil {
+	// 	log.Fatal(err.Error())
+	// 	return err
+	// }
 	return nil
 }
 
