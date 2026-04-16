@@ -10,6 +10,11 @@ import (
 	"net/http"
 )
 
+//controller.go文件定义了处理用户相关请求的控制器函数。
+// 这些函数只管接收HTTP请求，解析请求数据，调用gorm服务层的相应方法进行业务逻辑处理，
+// 并通过JsonBack函数统一格式化响应结果返回给客户端。
+// 每个函数都对应一个具体的用户操作，如注册、登录、修改信息等，确保了代码的清晰和可维护性。
+
 // Register 注册
 func Register(c *gin.Context) {
 	var registerReq request.RegisterRequest

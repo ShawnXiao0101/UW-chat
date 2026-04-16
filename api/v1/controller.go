@@ -6,6 +6,14 @@ import (
 )
 
 func JsonBack(c *gin.Context, message string, ret int, data interface{}) {
+	//{
+    // "code": 200,
+    // "message": "登录成功",
+    // "data": {
+    //     "uuid": "U123456",
+    //     "name": "张三"
+    // }
+	// }
 	if ret == 0 {
 		if data != nil {
 			c.JSON(http.StatusOK, gin.H{
