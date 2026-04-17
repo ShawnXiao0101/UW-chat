@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+
+# 编译产物
+kama_chat_server
+kama_chat_backend
+
+# 测试
+test/
+
+# 日志
+logs/
+
+# 本地配置（不能打进镜像，包含密码）
+configs/config_local.toml
+
+# 前端代码（后端镜像不需要）
+web/
+
+# IDE
+.idea/
+.vscode/
+*.swp

@@ -3,13 +3,16 @@ package config
 import (
 	"github.com/BurntSushi/toml"
 	"log"
+	"os"
 	"time"
 )
 
 type MainConfig struct {
-	AppName string `toml:"appName"`
-	Host    string `toml:"host"`
-	Port    int    `toml:"port"`
+	AppName     string `toml:"appName"`
+	Host        string `toml:"host"`
+	Port        int    `toml:"port"`
+	TLSCertFile string `toml:"tlsCertFile"`
+	TLSKeyFile  string `toml:"tlsKeyFile"`
 }
 
 type MysqlConfig struct {
@@ -66,16 +69,14 @@ type Config struct {
 var config *Config
 
 func LoadConfig() error {
-	// macOS本地部署
-	if _, err := toml.DecodeFile("/Users/shawn/Desktop/UW-chat/KamaChat/configs/config_local.toml", config); err != nil {
+	path := os.Getenv("CONFIG_PATH")
+	if path == "" {
+		path = "./configs/config_local.toml"
+	}
+	if _, err := toml.DecodeFile(path, config); err != nil {
 		log.Fatal(err.Error())
 		return err
 	}
-	// Ubuntu22.04云服务器部署
-	// if _, err := toml.DecodeFile("/root/project/KamaChat/configs/config_local.toml", config); err != nil {
-	// 	log.Fatal(err.Error())
-	// 	return err
-	// }
 	return nil
 }
 

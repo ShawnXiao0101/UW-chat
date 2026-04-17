@@ -1,0 +1,14 @@
+# 依赖目录（镜像内会重新 yarn install）
+node_modules/
+
+# 上次构建产物
+dist/
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.swp

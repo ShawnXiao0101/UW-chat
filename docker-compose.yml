@@ -1,0 +1,91 @@
+version: "3.9"
+
+# ============================================================
+# 服务说明：
+#   mysql    → 数据库，数据持久化到 mysql_data volume
+#   redis    → 缓存，数据持久化到 redis_data volume
+#   backend  → Go 后端，依赖 mysql/redis 启动完成后才启动
+#   frontend → Vue SPA + nginx 反向代理，依赖 backend
+# ============================================================
+
+services:
+
+  # ----------------------------------------------------------
+  # MySQL 8
+  # ----------------------------------------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: kamachat-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: kamachat123     # 与 config_docker.toml 里的 password 保持一致
+      MYSQL_DATABASE: kama_chat            # 自动创建数据库，与 databaseName 保持一致
+    ports:
+      - "3307:3306"                        # 宿主机 3307 → 容器 3306（避免与本地 MySQL 冲突）
+    volumes:
+      - mysql_data:/var/lib/mysql          # 数据持久化，删容器不丢数据
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pkamachat123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------
+  # Redis 7
+  # ----------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: kamachat-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"                        # 宿主机 6380 → 容器 6379（避免与本地 Redis 冲突）
+    volumes:
+      - redis_data:/data                   # AOF/RDB 持久化
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------
+  # Go 后端
+  # ----------------------------------------------------------
+  backend:
+    build:
+      context: .                           # Dockerfile 在根目录
+      dockerfile: Dockerfile
+    container_name: kamachat-backend
+    restart: unless-stopped
+    environment:
+      CONFIG_PATH: /app/configs/config_docker.toml
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./static:/app/static               # 上传的头像/文件持久化到宿主机
+      - ./logs:/app/logs                   # 日志持久化到宿主机，方便直接查看
+    depends_on:
+      mysql:
+        condition: service_healthy         # 等 MySQL 健康检查通过再启动
+      redis:
+        condition: service_healthy         # 等 Redis 健康检查通过再启动
+
+  # ----------------------------------------------------------
+  # Vue 前端 (nginx)
+  # ----------------------------------------------------------
+  frontend:
+    build:
+      context: ./web/chat-server           # Dockerfile 在 web/chat-server 目录
+      dockerfile: Dockerfile
+    container_name: kamachat-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"                            # 浏览器直接访问 http://localhost
+    depends_on:
+      - backend
+
+# ============================================================
+# 持久化 Volumes
+# ============================================================
+volumes:
+  mysql_data:
+  redis_data:

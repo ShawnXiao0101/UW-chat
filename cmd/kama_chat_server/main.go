@@ -32,16 +32,12 @@ func main() {
 	}
 
 	go func() {
-		// macOS本地部署
-		if err := https_server.GE.RunTLS(fmt.Sprintf("%s:%d", host, port), "/Users/shawn/Desktop/UW-chat/KamaChat/pkg/ssl/127.0.0.1+1.pem", "/Users/shawn/Desktop/UW-chat/KamaChat/pkg/ssl/127.0.0.1+1-key.pem"); err != nil {
+		certFile := conf.MainConfig.TLSCertFile
+		keyFile := conf.MainConfig.TLSKeyFile
+		if err := https_server.GE.RunTLS(fmt.Sprintf("%s:%d", host, port), certFile, keyFile); err != nil {
 			zlog.Fatal("server running fault")
 			return
 		}
-		// Ubuntu22.04云服务器部署
-		// if err := https_server.GE.RunTLS(fmt.Sprintf("%s:%d", host, port), "/etc/ssl/certs/server.crt", "/etc/ssl/private/server.key"); err != nil {
-		// 	zlog.Fatal("server running fault")
-		// 	return
-		// }
 	}()
 	
 	//主程序阻塞等待，直到接收到系统信号（如SIGINT或SIGTERM）时才继续执行后续的清理和关闭操作。
