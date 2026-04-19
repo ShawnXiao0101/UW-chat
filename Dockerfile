@@ -17,6 +17,9 @@ RUN go mod download
 # 再复制源代码
 COPY . .
 
+# 确保 static 子目录存在（它们被 .gitignore 排除，CI checkout 后可能缺失）
+RUN mkdir -p static/avatars static/files
+
 # 编译：
 #   CGO_ENABLED=0  → 静态链接，不依赖 libc，可在 alpine/scratch 上跑
 #   GOOS=linux     → 交叉编译为 Linux 二进制（开发机可能是 macOS）
