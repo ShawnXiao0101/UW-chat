@@ -369,7 +369,7 @@
 </template>
 
 <script>
-import { reactive, toRefs, onMounted } from "vue";
+import { reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
@@ -379,7 +379,7 @@ import SmallModal from "./SmallModal.vue";
 export default {
   name: "ContactListModal",
   props: {
-    isVisible: true,
+    isVisible: { type: Boolean, default: true },
   },
   components: {
     Modal,
@@ -448,7 +448,7 @@ export default {
           console.log(data.createGroupReq.avatar);
           data.uploadRef.submit();
         }
-        const response = await axios.post(
+        await axios.post(
           store.state.backendUrl + "/group/createGroup",
           data.createGroupReq
         );

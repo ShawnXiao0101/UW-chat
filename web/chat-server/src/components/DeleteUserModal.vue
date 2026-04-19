@@ -56,7 +56,7 @@ import axios from 'axios';
 export default {
   name: "DeleteUserModal",
   props: {
-    isVisible: false,
+    isVisible: { type: Boolean, default: false },
   },
   setup() {
     const store = useStore();

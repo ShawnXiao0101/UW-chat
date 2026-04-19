@@ -4,11 +4,14 @@
 
 <script>
 import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { ElMessage } from "element-plus";
 import axios from "axios";
 export default {
   name: "App",
   setup() {
+    const router = useRouter();
     const store = useStore();
     const getUserInfo = async () => {
       try {
@@ -35,7 +38,7 @@ export default {
     const logout = async () => {
       store.commit("cleanUserInfo");
       const req = {
-        owner_id: data.userInfo.uuid,
+        owner_id: store.state.userInfo.uuid,
       };
       const rsp = await axios.post(
         store.state.backendUrl + "/user/wsLogout",
@@ -68,8 +71,8 @@ export default {
           console.log("WebSocket连接已关闭");
         console.log("连接信令服务器断开");
         };
-        store.state.socket.onerror = () => {
-          console.log("WebSocket连接发生错误");console.log("连接信令服务器失败，错误信息：", error);
+        store.state.socket.onerror = (err) => {
+          console.log("WebSocket连接发生错误");console.log("连接信令服务器失败，错误信息：", err);
         };
         console.log(store.state.socket);
       }
