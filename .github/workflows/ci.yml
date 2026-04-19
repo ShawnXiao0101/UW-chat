@@ -27,7 +27,7 @@ jobs:
 
       - name: Run tests
         env:
-          CONFIG_PATH: ./configs/config.toml
+          CONFIG_PATH: ${{ github.workspace }}/configs/config.toml
         run: |
           go test ./test/zlog/...
           go test ./test/config/...
