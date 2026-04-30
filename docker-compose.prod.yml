@@ -1,0 +1,11 @@
+services:
+  frontend:
+    ports:
+      - "3000:80"
+  backend:
+    environment:
+      CONFIG_PATH: /app/configs/config_aws.toml
+    volumes:
+      - ./static:/app/static
+      - ./logs:/app/logs
+      - /etc/letsencrypt:/etc/letsencrypt:ro
