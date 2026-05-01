@@ -79,7 +79,7 @@ services:
     container_name: kamachat-frontend
     restart: unless-stopped
     ports:
-      - "80:80"                            # 浏览器直接访问 http://localhost
+      - "3000:80"                          # 本地访问 http://localhost:3000，生产由 Nginx 代理
     depends_on:
       - backend
 
