@@ -1,12 +1,59 @@
 services:
-  frontend:
-    image: kamachat-frontend:latest
-    ports:
-      - "3000:80"
+
+  mysql:
+    image: mysql:8.0
+    container_name: kamachat-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: kamachat123
+      MYSQL_DATABASE: kama_chat
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pkamachat123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: kamachat-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
+    image: ${BACKEND_IMAGE}
+    container_name: kamachat-backend
+    restart: unless-stopped
     environment:
       CONFIG_PATH: /app/configs/config_aws.toml
+    ports:
+      - "8000:8000"
     volumes:
       - ./static:/app/static
       - ./logs:/app/logs
       - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    image: ${FRONTEND_IMAGE}
+    container_name: kamachat-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+  redis_data:
